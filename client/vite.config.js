@@ -9,5 +9,10 @@ export default defineConfig(({ mode }) => {
     define: {
       __APP_ENV__: env.APP_ENV,
     },
+    server: {
+      port: 3000,
+      open: true,
+      host: true,
+    },
   };
 });
