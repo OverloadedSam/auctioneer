@@ -3,6 +3,7 @@ const http = require('http');
 const express = require('express');
 const app = express();
 const connectDB = require('./config/db');
+const cors = require('./middlewares/cors');
 
 const server = http.createServer(app);
 
@@ -12,6 +13,8 @@ if (app.get('env') !== 'production') {
 }
 
 connectDB();
+
+app.use(cors);
 
 const port = process.env.PORT || 8000;
 server.listen(port, (error) => {
