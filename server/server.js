@@ -5,6 +5,7 @@ const app = express();
 const connectDB = require('./config/db');
 const cors = require('./middlewares/cors');
 const errorHandler = require('./middlewares/errorHandler');
+const userRoutes = require('./routes/users');
 
 const server = http.createServer(app);
 
@@ -16,6 +17,12 @@ if (app.get('env') !== 'production') {
 connectDB();
 
 app.use(cors);
+
+app.use(express.json({ extended: true }));
+
+const baseUrl = process.env.BASE_URL_PREFIX;
+
+app.use(baseUrl, userRoutes); // User Routes
 
 app.use(errorHandler); // Custom error handler
 
