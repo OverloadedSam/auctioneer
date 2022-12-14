@@ -10,3 +10,7 @@ a {
   text-decoration: none;
   color: inherit;
 }
+
+input[type='date'] {
+  text-transform: uppercase;
+}
