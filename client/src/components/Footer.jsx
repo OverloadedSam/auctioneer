@@ -15,6 +15,7 @@ export default Footer;
 
 const FooterContainer = styled.footer`
   color: #fff;
-  padding: 1.2rem;
+  padding: 1rem;
   background-color: #1b1b1b;
+  margin-top: auto;
 `;
