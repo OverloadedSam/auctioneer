@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import styled from '@emotion/styled';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -8,6 +9,7 @@ import SignIn from '@mui/icons-material/Login';
 import SignUp from '@mui/icons-material/PersonAdd';
 
 const Home = () => {
+  const { isLoggedIn } = useSelector((state) => state.auth.userLogin);
   return (
     <HeroContainer>
       <div>
@@ -21,12 +23,28 @@ const Home = () => {
           </Typography>
         </Stack>
         <Stack spacing={2} direction='row' justifyContent='center' mt={4}>
-          <Button variant='contained' color='secondary' startIcon={<SignIn />}>
-            <Link to='/login'>Login</Link>
-          </Button>
-          <Button variant='contained' color='success' startIcon={<SignUp />}>
-            <Link to='/register'>Register</Link>
-          </Button>
+          {isLoggedIn ? (
+            <Button variant='contained' color='secondary'>
+              <Link to='/auctions'>View Auctions</Link>
+            </Button>
+          ) : (
+            <>
+              <Button
+                variant='contained'
+                color='secondary'
+                startIcon={<SignIn />}
+              >
+                <Link to='/login'>Login</Link>
+              </Button>
+              <Button
+                variant='contained'
+                color='success'
+                startIcon={<SignUp />}
+              >
+                <Link to='/register'>Register</Link>
+              </Button>
+            </>
+          )}
         </Stack>
       </div>
     </HeroContainer>
