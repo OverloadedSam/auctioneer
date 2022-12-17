@@ -6,6 +6,7 @@ const connectDB = require('./config/db');
 const cors = require('./middlewares/cors');
 const errorHandler = require('./middlewares/errorHandler');
 const userRoutes = require('./routes/users');
+const auctionRoutes = require('./routes/auctions');
 
 const server = http.createServer(app);
 
@@ -18,11 +19,12 @@ connectDB();
 
 app.use(cors);
 
-app.use(express.json({ extended: true }));
+app.use(express.json({ extended: true, limit: '20mb' }));
 
 const baseUrl = process.env.BASE_URL_PREFIX;
 
 app.use(baseUrl, userRoutes); // User Routes
+app.use(baseUrl, auctionRoutes); // Auction Routes
 
 app.use(errorHandler); // Custom error handler
 
