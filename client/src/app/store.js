@@ -1,5 +1,6 @@
-import { configureStore, combineReducers } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
 import authReducer from '../features/authSlice';
+import auctionReducer from '../features/auctionSlice';
 import auth from '../services/auth';
 
 const user = auth.getCurrentUser();
@@ -18,6 +19,7 @@ const preloadedState = {
 const store = configureStore({
   reducer: {
     auth: authReducer,
+    auction: auctionReducer,
   },
   preloadedState,
 });
