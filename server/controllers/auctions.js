@@ -52,3 +52,20 @@ module.exports.createAuction = asyncHandler(async (req, res, next) => {
     },
   });
 });
+
+// @route    GET /api/auction
+// @desc     Get the upcoming and live auctions
+// @access   Public
+module.exports.getUpcomingAuctions = asyncHandler(async (req, res, next) => {
+  const auctions = await Auction.find({
+    endTime: {
+      $gte: new Date(),
+    },
+  }).select(['_id', 'itemName', 'images', 'startTime', 'endTime', 'state']);
+
+  res.status(200).json({
+    success: true,
+    status: 200,
+    data: auctions,
+  });
+});
