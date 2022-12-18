@@ -69,3 +69,25 @@ module.exports.getUpcomingAuctions = asyncHandler(async (req, res, next) => {
     data: auctions,
   });
 });
+
+// @route    GET /api/auction/:id
+// @desc     Get the details of a specific auction
+// @access   Public
+module.exports.getAuctionDetails = asyncHandler(async (req, res, next) => {
+  const id = req.params.id;
+
+  const auction = await Auction.findOne({ _id: id }, { bids: { $slice: -20 } })
+    .populate('seller', '_id name avatar')
+    .populate('winner', '_id name avatar')
+    .populate('bids.bidder', '_id name avatar')
+    .select('-createdAt -updatedAt -address -__v');
+
+  if (!auction)
+    return next(new ErrorResponse(404, `Auction with id ${id} not found!`));
+
+  res.status(200).json({
+    success: true,
+    status: 200,
+    data: auction,
+  });
+});
