@@ -150,13 +150,7 @@ const Navbar = () => {
                   onClick={(e) => setAnchorElUser(e.currentTarget)}
                   sx={{ p: 0 }}
                 >
-                  {user.avatar !== 'avatar.svg' ? (
-                    <Avatar alt={user.name} src={user.avatar} />
-                  ) : (
-                    <Avatar sx={{ bgcolor: green[500] }}>
-                      <UserIcon />
-                    </Avatar>
-                  )}
+                  <Avatar alt={user.name} src={user.avatar} />
                 </IconButton>
               </Tooltip>
             )}

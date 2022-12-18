@@ -14,7 +14,7 @@ const userSchema = new Schema(
     },
     avatar: {
       type: String,
-      default: 'avatar.svg',
+      default: process.env.DEFAULT_AVATAR,
       trim: true,
     },
     email: {
