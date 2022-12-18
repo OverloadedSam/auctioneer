@@ -51,8 +51,55 @@ const createAuctionSlice = createSlice({
   },
 });
 
-export default combineReducers({
-  createAuction: createAuctionSlice.reducer,
+const initialAuctionState = {
+  loading: false,
+  success: false,
+  error: null,
+  data: null,
+};
+
+const getAuctions = createAsyncThunk(
+  'auction/fetch',
+  async (payload, { fulfillWithValue, rejectWithValue }) => {
+    try {
+      const { data } = await http.get('/auction');
+      return fulfillWithValue(data);
+    } catch (error) {
+      return rejectWithValue(
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+      );
+    }
+  }
+);
+
+const getAuctionsSlice = createSlice({
+  name: 'auction/fetch',
+  initialState: initialAuctionState,
+  extraReducers: (builder) => {
+    builder.addCase(getAuctions.pending, (auction, action) => {
+      auction.loading = true;
+      auction.error = null;
+    });
+
+    builder.addCase(getAuctions.fulfilled, (auction, action) => {
+      auction.loading = false;
+      auction.success = true;
+      auction.data = action.payload.data;
+    });
+
+    builder.addCase(getAuctions.rejected, (auction, action) => {
+      auction.loading = false;
+      auction.success = false;
+      auction.error = action.payload;
+    });
+  },
 });
 
-export { createAuction };
+export default combineReducers({
+  createAuction: createAuctionSlice.reducer,
+  auctions: getAuctionsSlice.reducer,
+});
+
+export { createAuction, getAuctions };
