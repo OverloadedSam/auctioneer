@@ -6,6 +6,7 @@ import Footer from './components/Footer';
 import Home from './screens/Home';
 import Register from './screens/Register';
 import Login from './screens/Login';
+import Auctions from './screens/Auctions';
 import CreateAuction from './screens/CreateAuction';
 import Logout from './common/Logout';
 
@@ -22,6 +23,7 @@ const App = () => {
             </RequireAuth>
           }
         />
+        <Route path='/auctions' element={<Auctions />} />
         <Route path='/logout' element={<Logout />} />
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />
