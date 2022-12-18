@@ -51,7 +51,7 @@ const createAuctionSlice = createSlice({
   },
 });
 
-const initialAuctionState = {
+const initialAuctionsState = {
   loading: false,
   success: false,
   error: null,
@@ -59,7 +59,7 @@ const initialAuctionState = {
 };
 
 const getAuctions = createAsyncThunk(
-  'auction/fetch',
+  'auctions/fetch',
   async (payload, { fulfillWithValue, rejectWithValue }) => {
     try {
       const { data } = await http.get('/auction');
@@ -75,8 +75,8 @@ const getAuctions = createAsyncThunk(
 );
 
 const getAuctionsSlice = createSlice({
-  name: 'auction/fetch',
-  initialState: initialAuctionState,
+  name: 'auctions/fetch',
+  initialState: initialAuctionsState,
   extraReducers: (builder) => {
     builder.addCase(getAuctions.pending, (auction, action) => {
       auction.loading = true;
