@@ -10,6 +10,7 @@ const userRoutes = require('./routes/users');
 const auctionRoutes = require('./routes/auctions');
 const { verifyToken } = require('./middlewares/verifyToken');
 const auctionsHandler = require('./handlers/auctions');
+const bidsHandler = require('./handlers/bids');
 
 const server = http.createServer(app);
 
@@ -34,6 +35,7 @@ const io = new Server(server, {
 io.use(verifyToken);
 io.on('connection', (socket) => {
   auctionsHandler(io, socket);
+  bidsHandler(io, socket);
 });
 
 const baseUrl = process.env.BASE_URL_PREFIX;
