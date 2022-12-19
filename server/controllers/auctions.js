@@ -85,6 +85,15 @@ module.exports.getAuctionDetails = asyncHandler(async (req, res, next) => {
   if (!auction)
     return next(new ErrorResponse(404, `Auction with id ${id} not found!`));
 
+  const hasAuctionClosed = new Date(auction.endTime) < new Date();
+
+  if (hasAuctionClosed && !auction.winner && auction.bids.length) {
+    const winner = auction.bids[auction.bids.length - 1].bidder;
+    auction.winner = winner._id;
+    await auction.save();
+    await auction.populate('winner', '_id name avatar');
+  }
+
   res.status(200).json({
     success: true,
     status: 200,
