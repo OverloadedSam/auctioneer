@@ -1,5 +1,6 @@
 require('dotenv').config();
 const http = require('http');
+const { Server } = require('socket.io');
 const express = require('express');
 const app = express();
 const connectDB = require('./config/db');
@@ -7,6 +8,8 @@ const cors = require('./middlewares/cors');
 const errorHandler = require('./middlewares/errorHandler');
 const userRoutes = require('./routes/users');
 const auctionRoutes = require('./routes/auctions');
+const { verifyToken } = require('./middlewares/verifyToken');
+const auctionsHandler = require('./handlers/auctions');
 
 const server = http.createServer(app);
 
@@ -20,6 +23,18 @@ connectDB();
 app.use(cors);
 
 app.use(express.json({ extended: true, limit: '20mb' }));
+
+const io = new Server(server, {
+  cors: {
+    origin: process.env.ORIGIN,
+    credentials: true,
+  },
+});
+
+io.use(verifyToken);
+io.on('connection', (socket) => {
+  auctionsHandler(io, socket);
+});
 
 const baseUrl = process.env.BASE_URL_PREFIX;
 
