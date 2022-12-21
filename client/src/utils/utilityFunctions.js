@@ -46,3 +46,17 @@ export const addMinutesToDate = (date, minutes) => {
 
   return new Date(dateTime.getTime() + minutes * millisecondsInAMinute);
 };
+
+export const geRemainingTime = (upcomingTime) => {
+  const currentDateTime = new Date().getTime();
+  const timeRemaining = new Date(upcomingTime).getTime() - currentDateTime;
+
+  const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+  const hours = Math.floor(
+    (timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+  );
+  const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+
+  return { days, hours, minutes, seconds };
+};
