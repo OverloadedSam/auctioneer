@@ -60,3 +60,13 @@ export const geRemainingTime = (upcomingTime) => {
 
   return { days, hours, minutes, seconds };
 };
+
+export const formatCurrency = ({ amount, locale, currency, decimal }) => {
+  const formatter = new Intl.NumberFormat(locale || 'en-IN', {
+    maximumFractionDigits: decimal || 2,
+    style: 'currency',
+    currency: currency || 'INR',
+  });
+
+  return formatter.format(amount);
+};
