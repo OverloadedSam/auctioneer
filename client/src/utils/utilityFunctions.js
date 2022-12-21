@@ -70,3 +70,8 @@ export const formatCurrency = ({ amount, locale, currency, decimal }) => {
 
   return formatter.format(amount);
 };
+
+export const isAuctionLive = (startTime, endTime) => {
+  const today = new Date();
+  return new Date(startTime) < today && today < new Date(endTime);
+};
