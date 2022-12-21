@@ -75,3 +75,8 @@ export const isAuctionLive = (startTime, endTime) => {
   const today = new Date();
   return new Date(startTime) < today && today < new Date(endTime);
 };
+
+export const hasAuctionEnded = (endTime) => {
+  const today = new Date();
+  return today > new Date(endTime);
+};
