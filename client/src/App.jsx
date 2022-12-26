@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import RequireAuth from './common/RequireAuth';
+import { ToastContainer } from 'react-toastify';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './screens/Home';
@@ -14,6 +15,7 @@ const App = () => {
   return (
     <Router>
       <Navbar />
+      <ToastContainer />
       <Routes>
         <Route
           path='/auction/create'
