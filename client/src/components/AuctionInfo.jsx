@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import { useSelector } from 'react-redux';
 import Slider from 'react-slick';
 import Box from '@mui/material/Box';
@@ -6,14 +7,17 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Chip from '@mui/material/Chip';
 import Avatar from '@mui/material/Avatar';
+import TagIcon from '@mui/icons-material/TagRounded';
 import SellerIcon from '@mui/icons-material/PersonPinRounded';
 import ClockStart from '@mui/icons-material/TimerOutlined';
 import ClockEnd from '@mui/icons-material/TimerOffOutlined';
 import LocationIcon from '@mui/icons-material/Room';
+import CopyText from '../common/CopyText';
 import { formatCurrency } from '../utils/utilityFunctions';
 import { selectAuctionData } from '../features/auctionSlice';
 
 const AuctionInfo = () => {
+  const elementRef = useRef(null);
   const auctionData = useSelector(selectAuctionData);
 
   const settings = {
@@ -27,6 +31,7 @@ const AuctionInfo = () => {
   };
 
   const {
+    _id,
     itemName,
     images,
     minimumBid,
@@ -69,7 +74,14 @@ const AuctionInfo = () => {
       </Paper>
 
       <Paper as={Stack} spacing={2} elevation={3} sx={{ p: 2, mb: 4 }}>
-        <Stack direction='row' spacing={2} color='grey'>
+        <Stack direction='row' alignItems='center' spacing={2} color='grey'>
+          <TagIcon color='secondary' />{' '}
+          <Typography title='Auction ID' ref={elementRef} variant='body1'>
+            {_id}
+          </Typography>
+          <CopyText title={'Copy Auction ID'} elementRef={elementRef} />
+        </Stack>
+        <Stack direction='row' sx={{ margin: 0 }} spacing={2} color='grey'>
           <SellerIcon color='secondary' />{' '}
           <Chip
             sx={{ fontWeight: 'bold', textTransform: 'capitalize' }}
@@ -81,23 +93,26 @@ const AuctionInfo = () => {
               />
             }
             label={seller.name}
+            title='Seller'
           />
         </Stack>
         <Stack direction='row' spacing={2} color='grey'>
           <ClockStart color='secondary' />{' '}
-          <Typography variant='body1'>
+          <Typography title='Auction Starting Time' variant='body1'>
             {new Date(startTime).toString().substring(0, 34)}
           </Typography>
         </Stack>
         <Stack direction='row' spacing={2} color='grey' variant='body1'>
           <ClockEnd color='secondary' />{' '}
-          <Typography variant='body1'>
+          <Typography title='Auction Ending Time' variant='body1'>
             {new Date(endTime).toString().substring(0, 34)}
           </Typography>
         </Stack>
         <Stack direction='row' spacing={2} color='grey' variant='body1'>
           <LocationIcon color='secondary' />{' '}
-          <Typography variant='body1'>{state}</Typography>
+          <Typography title='State of Seller' variant='body1'>
+            {state}
+          </Typography>
         </Stack>
       </Paper>
 
