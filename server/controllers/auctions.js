@@ -117,3 +117,21 @@ module.exports.getAuctionsByUser = asyncHandler(async (req, res, next) => {
     data: auctions,
   });
 });
+
+// @route    GET /api/auctions/won
+// @desc     Get all the auctions that logged in user has won
+// @access   Private
+module.exports.getWonAuctionsByUser = asyncHandler(async (req, res, next) => {
+  const user = req.user;
+
+  const auctions = await Auction.find({ winner: user._id })
+    .populate('seller', '_id name avatar')
+    .select('_id itemName images state startTime endTime')
+    .sort({ endTime: 'desc' });
+
+  res.status(200).json({
+    success: true,
+    status: 200,
+    data: auctions,
+  });
+});
