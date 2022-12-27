@@ -9,6 +9,7 @@ import Register from './screens/Register';
 import Login from './screens/Login';
 import Auctions from './screens/Auctions';
 import CreateAuction from './screens/CreateAuction';
+import AuctionDetails from './screens/AuctionDetails';
 import Logout from './common/Logout';
 
 const App = () => {
@@ -17,14 +18,24 @@ const App = () => {
       <Navbar />
       <ToastContainer />
       <Routes>
-        <Route
-          path='/auction/create'
-          element={
-            <RequireAuth>
-              <CreateAuction />
-            </RequireAuth>
-          }
-        />
+        <Route path='/auction'>
+          <Route
+            path='create'
+            element={
+              <RequireAuth>
+                <CreateAuction />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path=':id'
+            element={
+              <RequireAuth>
+                <AuctionDetails />
+              </RequireAuth>
+            }
+          />
+        </Route>
         <Route path='/auctions' element={<Auctions />} />
         <Route path='/logout' element={<Logout />} />
         <Route path='/login' element={<Login />} />
