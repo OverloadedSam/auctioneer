@@ -100,3 +100,20 @@ module.exports.getAuctionDetails = asyncHandler(async (req, res, next) => {
     data: auction,
   });
 });
+
+// @route    GET /api/auctions/myAuctions
+// @desc     Get all the auctions that logged in user has started
+// @access   Private
+module.exports.getAuctionsByUser = asyncHandler(async (req, res, next) => {
+  const user = req.user;
+
+  const auctions = await Auction.find({ seller: user._id })
+    .select(['_id', 'itemName', 'images', 'startTime', 'endTime', 'state'])
+    .sort({ startTime: 'desc' });
+
+  res.status(200).json({
+    success: true,
+    status: 200,
+    data: auctions,
+  });
+});
