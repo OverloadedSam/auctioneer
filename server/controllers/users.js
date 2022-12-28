@@ -2,6 +2,7 @@ const User = require('../models/user');
 const asyncHandler = require('../middlewares/asyncHandler');
 const ErrorResponse = require('../utils/errorResponse');
 const { validateRegister, validateLogin } = require('../validations/user');
+const Auction = require('../models/auction');
 
 // @route    POST /api/register
 // @desc     Register user to the DB
@@ -79,4 +80,31 @@ module.exports.loginUser = asyncHandler(async (req, res, next) => {
         token,
       },
     });
+});
+
+// @route    GET /api/profile
+// @desc     Get details of logged in user
+// @access   Private
+module.exports.getUserProfile = asyncHandler(async (req, res, next) => {
+  let user = req.user;
+
+  if (!user) return next(new ErrorResponse(401, 'Unauthorized access!'));
+
+  const auctionsWonCount = await Auction.find({ winner: user._id }).count();
+  const auctionsInitiatedCount = await Auction.find({
+    seller: user._id,
+  }).count();
+
+  user = { ...req.user._doc };
+  user.auctionsWonCount = auctionsWonCount;
+  user.auctionsInitiatedCount = auctionsInitiatedCount;
+  delete user.password;
+  delete user.updatedAt;
+  delete user.__v;
+
+  res.status(200).json({
+    success: true,
+    status: 200,
+    data: user,
+  });
 });
