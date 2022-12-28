@@ -39,7 +39,7 @@ const menuItems = [
     path: '/auctions/myAuctions',
   },
   {
-    label: 'Auctions Won',
+    label: 'Won Auctions',
     path: '/auctions/won',
   },
   {

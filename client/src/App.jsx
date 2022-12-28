@@ -11,6 +11,7 @@ import Auctions from './screens/Auctions';
 import CreateAuction from './screens/CreateAuction';
 import AuctionDetails from './screens/AuctionDetails';
 import MyAuctions from './screens/MyAuctions';
+import WonAuctions from './screens/WonAuctions';
 import Logout from './common/Logout';
 
 const App = () => {
@@ -44,6 +45,14 @@ const App = () => {
             element={
               <RequireAuth>
                 <MyAuctions />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path='won'
+            element={
+              <RequireAuth>
+                <WonAuctions />
               </RequireAuth>
             }
           />
