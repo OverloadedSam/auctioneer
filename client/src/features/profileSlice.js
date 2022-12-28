@@ -5,6 +5,50 @@ import {
 } from '@reduxjs/toolkit';
 import http from '../services/http';
 
+const getMyProfile = createAsyncThunk(
+  'profile',
+  async (payload, { fulfillWithValue, rejectWithValue }) => {
+    try {
+      const { data } = await http.get('/profile');
+      return fulfillWithValue(data);
+    } catch (error) {
+      return rejectWithValue(
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+      );
+    }
+  }
+);
+
+const initialProfileState = {
+  loading: false,
+  success: false,
+  error: null,
+  data: null,
+};
+
+const getMyProfileSlice = createSlice({
+  name: 'profile',
+  initialState: initialProfileState,
+  extraReducers: (builder) => {
+    builder.addCase(getMyProfile.pending, (wonAuctions, action) => {
+      wonAuctions.loading = true;
+      wonAuctions.error = null;
+    });
+    builder.addCase(getMyProfile.fulfilled, (wonAuctions, action) => {
+      wonAuctions.loading = false;
+      wonAuctions.success = true;
+      wonAuctions.data = action.payload.data;
+    });
+    builder.addCase(getMyProfile.rejected, (wonAuctions, action) => {
+      wonAuctions.loading = false;
+      wonAuctions.success = false;
+      wonAuctions.error = action.payload;
+    });
+  },
+});
+
 const getMyAuctions = createAsyncThunk(
   'profile/myAuctions',
   async (payload, { fulfillWithValue, rejectWithValue }) => {
@@ -94,8 +138,9 @@ const getWonAuctionsSlice = createSlice({
 });
 
 export default combineReducers({
+  userProfile: getMyProfileSlice.reducer,
   myAuctions: getMyAuctionsSlice.reducer,
   wonAuctions: getWonAuctionsSlice.reducer,
 });
 
-export { getMyAuctions, getWonAuctions };
+export { getMyProfile, getMyAuctions, getWonAuctions };
