@@ -10,6 +10,7 @@ import Login from './screens/Login';
 import Auctions from './screens/Auctions';
 import CreateAuction from './screens/CreateAuction';
 import AuctionDetails from './screens/AuctionDetails';
+import MyAuctions from './screens/MyAuctions';
 import Logout from './common/Logout';
 
 const App = () => {
@@ -36,7 +37,17 @@ const App = () => {
             }
           />
         </Route>
-        <Route path='/auctions' element={<Auctions />} />
+        <Route path='/auctions'>
+          <Route path='' element={<Auctions />} />
+          <Route
+            path='myAuctions'
+            element={
+              <RequireAuth>
+                <MyAuctions />
+              </RequireAuth>
+            }
+          />
+        </Route>
         <Route path='/logout' element={<Logout />} />
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />

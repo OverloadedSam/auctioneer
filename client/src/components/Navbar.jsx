@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { green } from '@mui/material/colors';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -15,7 +14,6 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import MenuIcon from '@mui/icons-material/Menu';
 import GavelIcon from '@mui/icons-material/Gavel';
-import UserIcon from '@mui/icons-material/AccountCircle';
 
 const pages = [
   {
@@ -35,6 +33,10 @@ const menuItems = [
   {
     label: 'Profile',
     path: '/profile',
+  },
+  {
+    label: 'My Auctions',
+    path: '/auctions/myAuctions',
   },
   {
     label: 'Auctions Won',
