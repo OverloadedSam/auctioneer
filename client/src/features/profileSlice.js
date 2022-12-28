@@ -49,8 +49,53 @@ const getMyAuctionsSlice = createSlice({
   },
 });
 
-export default combineReducers({
-  myAuctions: getMyAuctionsSlice.reducer,
+const getWonAuctions = createAsyncThunk(
+  'profile/wonAuctions',
+  async (payload, { fulfillWithValue, rejectWithValue }) => {
+    try {
+      const { data } = await http.get('/auctions/won');
+      return fulfillWithValue(data);
+    } catch (error) {
+      return rejectWithValue(
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+      );
+    }
+  }
+);
+
+const initialWonAuctionsState = {
+  loading: false,
+  success: false,
+  error: null,
+  data: null,
+};
+
+const getWonAuctionsSlice = createSlice({
+  name: 'profile/wonAuctions',
+  initialState: initialWonAuctionsState,
+  extraReducers: (builder) => {
+    builder.addCase(getWonAuctions.pending, (wonAuctions, action) => {
+      wonAuctions.loading = true;
+      wonAuctions.error = null;
+    });
+    builder.addCase(getWonAuctions.fulfilled, (wonAuctions, action) => {
+      wonAuctions.loading = false;
+      wonAuctions.success = true;
+      wonAuctions.data = action.payload.data;
+    });
+    builder.addCase(getWonAuctions.rejected, (wonAuctions, action) => {
+      wonAuctions.loading = false;
+      wonAuctions.success = false;
+      wonAuctions.error = action.payload;
+    });
+  },
 });
 
-export { getMyAuctions };
+export default combineReducers({
+  myAuctions: getMyAuctionsSlice.reducer,
+  wonAuctions: getWonAuctionsSlice.reducer,
+});
+
+export { getMyAuctions, getWonAuctions };
