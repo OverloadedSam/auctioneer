@@ -1,4 +1,8 @@
 const yup = require('yup');
+const {
+  validateFileType,
+  validateFileSize,
+} = require('../utils/utilityFunctions');
 
 const get18YearsOldDate = () => {
   const years = 18;
@@ -86,7 +90,21 @@ const validateLogin = async (payload) => {
   }
 };
 
+const isValidUserAvatar = (avatar) => {
+  const allowedTypes = ['jpg', 'jpeg', 'png', 'webp'];
+  const allowedSizeInBytes = 2 * 1024 * 1024; // 2MB is the file (image) size limit.
+  const isValidType = validateFileType(avatar, allowedTypes);
+  const isValidSize = validateFileSize(avatar, allowedSizeInBytes);
+
+  let message = null;
+  if (!isValidType) message = 'Please select valid image file type!';
+  else if (!isValidSize) message = 'Image file size limit is 2MB!';
+
+  return { isValid: !message, error: message };
+};
+
 module.exports = {
   validateRegister,
   validateLogin,
+  isValidUserAvatar,
 };
