@@ -13,6 +13,7 @@ import AuctionDetails from './screens/AuctionDetails';
 import MyAuctions from './screens/MyAuctions';
 import WonAuctions from './screens/WonAuctions';
 import Profile from './screens/Profile';
+import UpdateProfile from './screens/UpdateProfile';
 import Logout from './common/Logout';
 
 const App = () => {
@@ -64,6 +65,14 @@ const App = () => {
             element={
               <RequireAuth>
                 <Profile />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path='update'
+            element={
+              <RequireAuth>
+                <UpdateProfile />
               </RequireAuth>
             }
           />
