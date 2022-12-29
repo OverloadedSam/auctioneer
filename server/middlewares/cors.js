@@ -6,7 +6,7 @@ const validateOrigin = (req, res, next) => {
 
   if (origin == requestOrigin) {
     res.setHeader('Access-Control-Allow-Origin', requestOrigin);
-    res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, PATCH, POST, DELETE');
     res.setHeader('Access-Control-Allow-Headers', '*');
     next();
   } else {
