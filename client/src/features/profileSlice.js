@@ -188,12 +188,69 @@ const changeAvatarSlice = createSlice({
   },
 });
 
+const updateProfile = createAsyncThunk(
+  'profile/update',
+  async (payload, { fulfillWithValue, rejectWithValue }) => {
+    try {
+      const { data } = await http.put('/profile', { ...payload });
+      return fulfillWithValue(data);
+    } catch (error) {
+      return rejectWithValue(
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+      );
+    }
+  }
+);
+
+const initialUpdateProfileState = {
+  loading: false,
+  success: false,
+  error: null,
+  data: null,
+};
+
+const updateProfileSlice = createSlice({
+  name: 'profile/update',
+  initialState: initialUpdateProfileState,
+  reducers: {
+    resetUpdateProfile() {
+      return initialUpdateProfileState;
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(updateProfile.pending, (updateProfile, action) => {
+      updateProfile.loading = true;
+      updateProfile.error = null;
+    });
+    builder.addCase(updateProfile.fulfilled, (updateProfile, action) => {
+      updateProfile.loading = false;
+      updateProfile.success = true;
+      updateProfile.data = action.payload.data;
+    });
+    builder.addCase(updateProfile.rejected, (updateProfile, action) => {
+      updateProfile.loading = false;
+      updateProfile.success = false;
+      updateProfile.error = action.payload;
+    });
+  },
+});
+
 export default combineReducers({
   userProfile: getMyProfileSlice.reducer,
   myAuctions: getMyAuctionsSlice.reducer,
   wonAuctions: getWonAuctionsSlice.reducer,
+  updateProfile: updateProfileSlice.reducer,
   changeAvatar: changeAvatarSlice.reducer,
 });
 
-export { getMyProfile, getMyAuctions, getWonAuctions, changeAvatar };
+export {
+  getMyProfile,
+  getMyAuctions,
+  getWonAuctions,
+  updateProfile,
+  changeAvatar,
+};
+export const { resetUpdateProfile } = updateProfileSlice.actions;
 export const { resetChangeAvatar } = changeAvatarSlice.actions;
