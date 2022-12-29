@@ -1,8 +1,14 @@
 const User = require('../models/user');
+const Auction = require('../models/auction');
+const cloudinary = require('../config/cloudinary');
 const asyncHandler = require('../middlewares/asyncHandler');
 const ErrorResponse = require('../utils/errorResponse');
-const { validateRegister, validateLogin } = require('../validations/user');
-const Auction = require('../models/auction');
+const {
+  validateRegister,
+  validateLogin,
+  isValidUserAvatar,
+} = require('../validations/user');
+const predefinedAvatars = require('../utils/avatars.json');
 
 // @route    POST /api/register
 // @desc     Register user to the DB
@@ -106,5 +112,54 @@ module.exports.getUserProfile = asyncHandler(async (req, res, next) => {
     success: true,
     status: 200,
     data: user,
+  });
+});
+
+// @route    PATCH /api/profile/changeAvatar
+// @desc     Change avatar of user.
+// @access   Private
+module.exports.changeUserAvatar = asyncHandler(async (req, res, next) => {
+  const userId = req.user._id;
+  const { avatar } = req.body;
+  let avatarUrl = avatar;
+
+  if (!avatar) return next(new ErrorResponse(422, 'Please provide an avatar!'));
+
+  // When data uri (custom image/avatar) is received in request body.
+  if (!avatar.startsWith('https://')) {
+    try {
+      const { isValid, error } = isValidUserAvatar(avatar);
+      if (!isValid) return next(new ErrorResponse(400, error));
+
+      const uploadResponse = await cloudinary.uploader.upload(avatar, {
+        folder: `auctioneer/users_avatars/${userId}`,
+        eager: [
+          { aspect_ratio: '1.1', gravity: 'face', crop: 'fill', radius: 'max' },
+        ],
+      });
+
+      avatarUrl =
+        uploadResponse.eager[0]?.secure_url || uploadResponse.secure_url;
+    } catch (error) {
+      const message = 'Unable to change avatar. Try again after some time!';
+      return next(new ErrorResponse(500, message));
+    }
+  } else {
+    // When avatar is one of predefined avatars then validate link.
+    const matchAvatars = (predefinedAvatar) => predefinedAvatar === avatarUrl;
+    const validPredefinedAvatar = predefinedAvatars.some(matchAvatars);
+
+    if (!validPredefinedAvatar)
+      return next(new ErrorResponse(400, 'Predefined avatar URL is incorrect'));
+  }
+
+  await User.findByIdAndUpdate(userId, { avatar: avatarUrl });
+
+  res.status(200).json({
+    success: true,
+    status: 200,
+    data: {
+      message: 'Your avatar has been updated',
+    },
   });
 });
