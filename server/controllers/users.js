@@ -7,6 +7,7 @@ const {
   validateRegister,
   validateLogin,
   isValidUserAvatar,
+  validateUserData,
 } = require('../validations/user');
 const predefinedAvatars = require('../utils/avatars.json');
 
@@ -161,5 +162,38 @@ module.exports.changeUserAvatar = asyncHandler(async (req, res, next) => {
     data: {
       message: 'Your avatar has been updated',
     },
+  });
+});
+
+// @route    POST /api/profile
+// @desc     Update user data
+// @access   Private
+module.exports.updateUser = asyncHandler(async (req, res, next) => {
+  const userId = req.user._id;
+  const userPayload = { ...req.body };
+  delete userPayload._id;
+  delete userPayload.avatar;
+  delete userPayload.password;
+
+  const { isValid, error } = await validateUserData(userPayload);
+
+  if (!isValid) return next(new ErrorResponse(400, error.message));
+
+  const emailExist = await User.findOne({
+    email: userPayload.email,
+    _id: { $ne: userId },
+  });
+
+  if (emailExist)
+    return next(new ErrorResponse(400, 'Email already used by other account'));
+
+  const updatedUser = await User.findByIdAndUpdate(userId, userPayload, {
+    returnDocument: 'after',
+  }).select('-password -__v');
+
+  res.status(200).json({
+    success: true,
+    status: 200,
+    data: updatedUser,
   });
 });
