@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import useTheme from '@mui/material/styles/useTheme';
@@ -24,10 +24,12 @@ import TrophyIcon from '@mui/icons-material/EmojiEventsOutlined';
 import GavelIcon from '@mui/icons-material/Gavel';
 import Loader from '../common/Loader';
 import Alert from '../common/Alert';
-import { getMyProfile } from '../features/profileSlice';
 import CopyText from '../common/CopyText';
+import ChangeAvatarModal from '../components/ChangeAvatarModal';
+import { getMyProfile } from '../features/profileSlice';
 
 const Profile = () => {
+  const [modalToggle, setModalToggle] = useState(false);
   const elementRef = useRef(null);
   const dispatch = useDispatch();
   const { loading, error, data } = useSelector(
@@ -40,6 +42,9 @@ const Profile = () => {
   useEffect(() => {
     dispatch(getMyProfile());
   }, []);
+
+  const openModal = () => setModalToggle(true);
+  const closeModal = () => setModalToggle(false);
 
   return (
     <Container maxWidth={'md'} sx={{ my: 6 }}>
@@ -61,22 +66,30 @@ const Profile = () => {
                   overlap='circular'
                   anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                   badgeContent={
-                    <Fab color='secondary' size='small' aria-label='edit'>
+                    <Fab
+                      onClick={openModal}
+                      color='secondary'
+                      size='small'
+                      aria-label='edit'
+                    >
                       <EditIcon />
                     </Fab>
                   }
                 >
-                  <Avatar
+                  <Box
                     sx={{
                       p: 0.5,
-                      width: 200,
-                      height: 200,
                       border: '4px dotted',
                       borderColor: 'secondary.main',
+                      borderRadius: '50%',
                     }}
-                    alt={data.name}
-                    src={data.avatar}
-                  />
+                  >
+                    <Avatar
+                      sx={{ width: 200, height: 200 }}
+                      alt={data.name}
+                      src={data.avatar}
+                    />
+                  </Box>
                 </Badge>
                 <Typography variant='h3' component='h1' gutterBottom>
                   {data.name} <FiberDotIcon color='success' />
@@ -163,6 +176,10 @@ const Profile = () => {
               </Link>
             </Box>
           </Stack>
+          <ChangeAvatarModal
+            openState={modalToggle}
+            closeHandler={closeModal}
+          />
         </Paper>
       ) : null}
     </Container>
