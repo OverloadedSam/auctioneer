@@ -5,6 +5,7 @@ import { ToastContainer } from 'react-toastify';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './screens/Home';
+import About from './screens/About';
 import Register from './screens/Register';
 import Login from './screens/Login';
 import Auctions from './screens/Auctions';
@@ -77,6 +78,7 @@ const App = () => {
             }
           />
         </Route>
+        <Route path='/about' element={<About />} />
         <Route path='/logout' element={<Logout />} />
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />
