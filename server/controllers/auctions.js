@@ -135,3 +135,51 @@ module.exports.getWonAuctionsByUser = asyncHandler(async (req, res, next) => {
     data: auctions,
   });
 });
+
+// @route    GET /api/auction/:auctionId/winner-seller-contact-details
+// @desc     Get winner or seller's contact details based on requester
+// @access   Private
+module.exports.getWinnerSellerContactDetails = asyncHandler(
+  async (req, res, next) => {
+    const userId = req.user._id; // Requester id
+    const auctionId = req.params.id;
+
+    const auction = await Auction.findOne({
+      _id: auctionId,
+      endTime: { $lte: new Date() },
+    })
+      .populate({ path: 'seller', select: '_id name email mobile' })
+      .populate({ path: 'winner', select: '_id name email mobile' })
+      .select('_id seller winner startTime endTime');
+
+    if (!auction) return next(new ErrorResponse(404, 'Auction not found'));
+    if (!auction.winner)
+      return next(new ErrorResponse(400, 'Sorry, Winner is not decided yet!'));
+
+    const { seller, winner } = auction;
+    if (!userId.equals(seller._id) && !userId.equals(winner._id)) {
+      const message =
+        'Sorry, but you are not the seller or the winner of this auction.';
+      return next(new ErrorResponse(403, message));
+    }
+
+    const data = {};
+    if (userId.equals(seller._id)) {
+      data.requester = 'seller';
+      data.contactDetails = auction.winner;
+      data.isWinnerDetails = true;
+      data.isSellerDetails = false;
+    } else {
+      data.requester = 'winner';
+      data.contactDetails = auction.seller;
+      data.isSellerDetails = true;
+      data.isWinnerDetails = false;
+    }
+
+    res.status(200).json({
+      success: true,
+      status: 200,
+      data,
+    });
+  }
+);
