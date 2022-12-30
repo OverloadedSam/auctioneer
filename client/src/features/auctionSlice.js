@@ -161,13 +161,75 @@ const getAuctionSlice = createSlice({
   },
 });
 
+const initialWinnerSellerDetailsState = {
+  loading: false,
+  success: false,
+  error: null,
+  data: null,
+};
+
+const getWinnerSellerDetails = createAsyncThunk(
+  'auction/winnerSellerDetails',
+  async (payload, { fulfillWithValue, rejectWithValue }) => {
+    try {
+      const url = `/auction/${payload.auctionId}/winner-seller-contact-details`;
+      const { data } = await http.get(url);
+      return fulfillWithValue(data);
+    } catch (error) {
+      return rejectWithValue(
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+      );
+    }
+  }
+);
+
+const getWinnerSellerDetailsSlice = createSlice({
+  name: 'auction/winnerSellerDetails',
+  initialState: initialWinnerSellerDetailsState,
+  reducers: {
+    resetWinnerSellerDetails() {
+      return initialWinnerSellerDetailsState;
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(getWinnerSellerDetails.pending, (auction, action) => {
+      auction.loading = true;
+      auction.error = null;
+    });
+
+    builder.addCase(getWinnerSellerDetails.fulfilled, (auction, action) => {
+      auction.loading = false;
+      auction.success = true;
+      auction.data = action.payload.data;
+    });
+
+    builder.addCase(getWinnerSellerDetails.rejected, (auction, action) => {
+      auction.loading = false;
+      auction.success = false;
+      auction.error = action.payload;
+    });
+  },
+});
+
 export default combineReducers({
   createAuction: createAuctionSlice.reducer,
   auctions: getAuctionsSlice.reducer,
   auction: getAuctionSlice.reducer,
+  winnerSellerDetails: getWinnerSellerDetailsSlice.reducer,
 });
 
-export { createAuction, getAuctions, getAuctionDetails, bidReceived, sendBid };
+export {
+  createAuction,
+  getAuctions,
+  getAuctionDetails,
+  bidReceived,
+  sendBid,
+  getWinnerSellerDetails,
+};
+
+export const { resetWinnerSellerDetails } = getWinnerSellerDetailsSlice.actions;
 
 // Selectors
 export const getHighestBid = (state) => {
@@ -180,4 +242,8 @@ export const getHighestBid = (state) => {
 
 export const selectAuctionData = (state) => {
   return state.auction.auction.data;
+};
+
+export const selectWinnerSellerDetails = (state) => {
+  return state.auction.winnerSellerDetails;
 };
