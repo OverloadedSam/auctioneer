@@ -18,7 +18,7 @@ These instructions will get you a copy of the project up and running on your loc
 
     $ git clone https://github.com/OverloadedSam/auctioneer.git
 
-  2. Go to `client` and `server` directory one by and and install dependencies with command shown at 3rd step.
+  2. Go to `client` and `server` directory one by one and install dependencies with command shown at 3rd step.
 
     $ cd client/
     // And
@@ -42,7 +42,7 @@ Create a `.env` file at `auctioneer/client/` directory and set the following env
 
 ### 2. Environment variables for `server`
 
-Create a `.env` file at `auctioneer/server/` directory and set the following environment variables starting with prefix `VITE_`
+Create a `.env` file at `auctioneer/server/` directory and set the following environment variables.
 
     PORT=8000 // You can set any port number that is available but make sure to correctly include it in client environment variables.
     BASE_URL_PREFIX={api_prefix} // e.g: `/api`
